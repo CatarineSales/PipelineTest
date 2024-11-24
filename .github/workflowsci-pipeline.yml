@@ -1,0 +1,63 @@
+name: Pipeline
+
+on:
+  push:
+    branches:
+      - main 
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # chando o código
+      - name: Check out repository
+        uses: actions/checkout@v3
+
+      # Configuração do Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18  # Versão do Node.js
+
+      # Instalar dependências
+      - name: Install dependencies
+        run: npm install
+
+      # Testar o projeto (se tiver scripts de teste)
+      - name: Run tests
+        run: npm testname: CI Pipeline
+
+on:
+  push:
+    branches:
+      - main  # Executa ao enviar mudanças para a branch "main"
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout do código
+      - name: Check out repository
+        uses: actions/checkout@v3
+
+      # Configuração do Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18  # Versão do Node.js
+
+      # Instalar dependências
+      - name: Install dependencies
+        run: npm install
+
+      # Testar o projeto (se tiver scripts de teste)
+      - name: Run tests
+        run: npm test
