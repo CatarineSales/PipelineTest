@@ -1,4 +1,4 @@
-name: CI Pipeline
+name: Build and Test Pipeline
 
 on:
   push:
@@ -6,27 +6,44 @@ on:
       - main  # Executa ao enviar mudanças para a branch "main"
   pull_request:
     branches:
-      - main
+      - main  # Executa para pull requests direcionadas à branch "main"
 
 jobs:
-  build:
+  build-and-test:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout do código
+      # 1. Checkout do repositório
       - name: Check out repository
         uses: actions/checkout@v3
 
-      # Configuração do Node.js
+      # 2. Configuração do Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 18  # Versão do Node.js
+          node-version: 18  # Especifique a versão do Node.js
 
-      # Instalar dependências
-      - name: Install dependencies
-        run: npm install
+      # 3. Instalar dependências e rodar testes Node.js
+      - name: Install and test Node.js code
+        run: |
+          npm install
+          npm run build  # Caso tenha um script de build no package.json
+          npm test
 
-      # Testar o projeto (se tiver scripts de teste)
-      - name: Run tests
-        run: npm test
+      # 4. Configuração do ambiente Java
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin' # Distribuição do Java (OpenJDK)
+          java-version: '17'      # Especifique a versão do Java
+
+      # 5. Compilar código Java
+      - name: Compile Java code
+        run: |
+          mkdir -p build
+          javac -d build src/**/*.java  # Compile todos os arquivos Java do diretório "src"
+
+      # 6. Executar testes Java (JUnit)
+      - name: Run Java tests
+        run: |
+          java -cp build:libs/junit.jar org.junit.runner.JUnitCore <TestClassName>
